@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Matriks Outlook Email İmza Oluşturucu</title>
+  <style>
+    :root { --bg:#f7f7f9; --card:#fff; --text:#222; --muted:#666; --primary:#0d6efd; --border:#e6e6e6; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: var(--text); }
+    header { padding:12px 24px; border-bottom:1px solid var(--border); background:#fff; position:sticky; top:0; }
+    .brand { display:flex; align-items:center; gap:12px; }
+    .brand img { height:32px; width:auto; display:block; }
+    h1 { font-size:18px; margin:0; }
+    main { max-width: 1200px; margin: 24px auto; padding: 0 16px; display:grid; grid-template-columns: 1.1fr 1.2fr; gap: 20px; }
+    .card { background: var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; }
+    .field { margin-bottom:12px; }
+    label { display:block; font-size:12px; color:var(--muted); margin-bottom:6px; }
+    input { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px; }
+    .row { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    button { background: var(--primary); color:#fff; border:0; border-radius:8px; padding:10px 14px; font-size:14px; cursor:pointer; }
+    button:disabled { opacity:0.6; cursor:not-allowed; }
+    .actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
+    .status { margin-top:8px; font-size:12px; color:var(--muted); }
+    iframe { width:100%; height:500px; border:1px solid var(--border); border-radius:10px; background:#fff; }
+    
+    /* Wider screens: expand further */
+    @media (min-width: 1400px) {
+      main { max-width: 1400px; grid-template-columns: 1.1fr 1.3fr; gap: 24px; }
+      iframe { height:560px; }
+    }
+    @media (min-width: 1700px) {
+      main { max-width: 1600px; grid-template-columns: 1.2fr 1.5fr; gap: 28px; }
+      iframe { height:620px; }
+    }
+
+    footer { max-width:1200px; margin: 0 auto 16px auto; padding: 0 16px; color: var(--muted); font-size:12px; }
+    .footer-inner { display:flex; justify-content:space-between; align-items:center; padding:8px 0; }
+    .footer-links { display:flex; gap:12px; align-items:center; }
+    .footer-links a { color: var(--muted); text-decoration: none; }
+
+    /* Internet connectivity banner */
+    .net-banner { display:none; background:#ffe5e5; color:#a30000; border-bottom:1px solid #f2bcbc; padding:8px 24px; }
+    .net-banner.show { display:block; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <a href="https://www.matrikstr.com" target="_blank" rel="noreferrer noopener">
+        <img src="build/matriks-logo.png" alt="Matriks Logo" />
+      </a>
+      <h1>Matriks Outlook Email İmza Oluşturucu</h1>
+    </div>
+  </header>
+  <div id="netBanner" class="net-banner">İnternet bağlantısı yok. Lütfen internet bağlantınızı kontrol edin.</div>
+  <main>
+    <section class="card">
+      <div class="field">
+        <label for="signatureName">Email İmza Adı (dosya adı)</label>
+        <input id="signatureName" placeholder="Örn: Kurumsal İmza" />
+      </div>
+      <div class="field">
+        <label for="fullName">Ad Soyad</label>
+        <input id="fullName" placeholder="Örn: Ad Soyad" />
+      </div>
+      <div class="field">
+        <label for="title">Ünvan</label>
+        <input id="title" placeholder="Örn: Departman / Ünvan" />
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="phone">Telefon Numarası</label>
+          <input id="phone" placeholder="Örn: +90 5XX XXX XX XX" />
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" placeholder="Örn: ad.soyad@firma.com" />
+        </div>
+      </div>
+      <div class="actions">
+        <button id="previewBtn" type="button">Önizle</button>
+        <button id="saveBtn" type="button">Email İmzası Oluştur</button>
+      </div>
+      <div id="status" class="status"></div>
+    </section>
+
+    <section class="card">
+      <iframe id="preview" title="Önizleme"></iframe>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-links">Matriks Bina Kontrol Sistemleri</div>
+      <div class="footer-links">
+        <span id="devLabel">Geliştirici: <a href="mailto:bilgiislem@matrikstr.com">Çağlar Bilgehan</a></span>
+        <span id="version">Versiyon: 1.1.0</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="renderer.js"></script>
+</body>
+</html>

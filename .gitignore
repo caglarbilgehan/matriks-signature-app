@@ -1,0 +1,16 @@
+# build çıktıları
+dist/
+build/
+out/
+release/
+*.log
+
+# bağımlılıklar
+node_modules/
+
+# diğer
+*.env
+*.env.*
+*.cache
+npm-debug.log*
+yarn-error.log*

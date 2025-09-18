@@ -1,0 +1,63 @@
+{
+  "name": "signature-app",
+  "version": "1.1.0",
+  "description": "Cross-platform desktop app to generate Outlook email signature HTML from user inputs.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-packager . SignatureApp --platform=win32,darwin,linux --arch=x64 --overwrite",
+    "dist": "electron-builder",
+    "dist:win": "electron-builder --win --x64",
+    "dist:mac": "electron-builder --mac --x64",
+    "dist:linux": "electron-builder --linux --x64"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "28.2.0",
+    "electron-packager": "17.1.1",
+    "electron-builder": "24.6.4"
+  },
+  "dependencies": {
+    "juice": "10.0.0"
+  },
+  "build": {
+    "appId": "com.matriks.signatureapp",
+    "productName": "Matriks Outlook Email İmza Oluşturucu",
+    "files": [
+      "**/*",
+      "!dist",
+      "!out",
+      "!assets/**"
+    ],
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "win": {
+      "icon": "build/app-icon.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Matriks Outlook Email İmza Oluşturucu"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": ["AppImage"],
+      "category": "Utility"
+    }
+  }
+}
