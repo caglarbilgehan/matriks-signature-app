@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Matriks Outlook Email İmza Oluşturucu</title>
+  <title>Matriks Outlook Email İmzası Oluşturucu</title>
   <style>
     :root { --bg:#f7f7f9; --card:#fff; --text:#222; --muted:#666; --primary:#0d6efd; --border:#e6e6e6; }
     * { box-sizing: border-box; }
@@ -40,6 +40,19 @@
     .footer-links { display:flex; gap:12px; align-items:center; }
     .footer-links a { color: var(--muted); text-decoration: none; }
 
+    /* Simple button style for footer link */
+    .btn {
+      display:inline-block;
+      padding:4px 8px;
+      border:1px solid var(--border);
+      border-radius:6px;
+      color:#333;
+      background:#fff;
+      text-decoration:none;
+      font-size:12px;
+    }
+    .btn:hover { background:#f5f5f5; }
+
     /* Internet connectivity banner */
     .net-banner { display:none; background:#ffe5e5; color:#a30000; border-bottom:1px solid #f2bcbc; padding:8px 24px; }
     .net-banner.show { display:block; }
@@ -51,7 +64,7 @@
       <a href="https://www.matrikstr.com" target="_blank" rel="noreferrer noopener">
         <img src="build/matriks-logo.png" alt="Matriks Logo" />
       </a>
-      <h1>Matriks Outlook Email İmza Oluşturucu</h1>
+      <h1>Matriks Outlook Email İmzası Oluşturucu</h1>
     </div>
   </header>
   <div id="netBanner" class="net-banner">İnternet bağlantısı yok. Lütfen internet bağlantınızı kontrol edin.</div>
@@ -96,6 +109,7 @@
       <div class="footer-links">Matriks Bina Kontrol Sistemleri</div>
       <div class="footer-links">
         <span id="devLabel">Geliştirici: <a href="mailto:bilgiislem@matrikstr.com">Çağlar Bilgehan</a></span>
+        <a class="btn" href="https://github.com/caglarbilgehan/matriks-signature-app" target="_blank" rel="noreferrer noopener">GitHub Repository</a>
         <span id="version">Versiyon: 1.1.0</span>
       </div>
     </div>

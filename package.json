@@ -23,7 +23,7 @@
   },
   "build": {
     "appId": "com.matriks.signatureapp",
-    "productName": "Matriks Outlook Email İmza Oluşturucu",
+    "productName": "Matriks Outlook Email İmzası Oluşturucu",
     "files": [
       "**/*",
       "!dist",
@@ -49,7 +49,7 @@
       "allowToChangeInstallationDirectory": false,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Matriks Outlook Email İmza Oluşturucu"
+      "shortcutName": "Matriks Outlook Email İmzası Oluşturucu"
     },
     "mac": {
       "target": ["dmg"],
