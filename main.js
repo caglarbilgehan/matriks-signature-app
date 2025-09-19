@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell, clipboard, Menu, globalShortcut } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -13,8 +13,29 @@ function createWindow() {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: false
-    }
+    },
+    autoHideMenuBar: true
   });
+
+// IPC: write HTML to system clipboard (also writes a plain text fallback)
+ipcMain.handle('write-clipboard-html', async (_e, { html }) => {
+  try {
+    const plain = String(html || '')
+      .replace(/<!--([\s\S]*?)-->/g, '')
+      .replace(/<style[\s\S]*?<\/style>/gi, '')
+      .replace(/<[^>]+>/g, ' ') // strip tags
+      .replace(/\s+/g, ' ')
+      .trim();
+    clipboard.write({ html: String(html || ''), text: plain });
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e?.message || String(e) };
+  }
+});
+
+  // Remove the default app menu
+  try { Menu.setApplicationMenu(null); } catch(_) {}
+  try { win.setMenuBarVisibility(false); } catch(_) {}
 
   win.loadFile(path.join(__dirname, 'index.html'));
 
@@ -42,6 +63,28 @@ function setupAutoUpdate() {
         message: `Yeni sürüm mevcut: ${info.version}. İndiriliyor...`,
         buttons: ['Tamam']
       });
+    });
+
+    // Progress feedback (global)
+    autoUpdater.on('download-progress', (progress) => {
+      try {
+        const win = BrowserWindow.getAllWindows()[0];
+        if (win) {
+          win.webContents.send('update-progress', {
+            percent: Math.round(progress?.percent || 0)
+          });
+        }
+      } catch (_) {}
+    });
+
+    // No update available (global)
+    autoUpdater.on('update-not-available', () => {
+      try {
+        const win = BrowserWindow.getAllWindows()[0];
+        if (win) {
+          win.webContents.send('update-status', { type: 'uptodate' });
+        }
+      } catch (_) {}
     });
 
     autoUpdater.on('update-downloaded', (info) => {
@@ -133,9 +176,10 @@ ipcMain.handle('save-signature', async (event, { fileName, htmlContent }) => {
     let targetDir = null;
 
     if (process.platform === 'win32') {
-      const appData = process.env.APPDATA || '';
+      // Use Electron API for reliability
+      const appData = app.getPath('appData');
       if (!appData) {
-        throw new Error('APPDATA bulunamadı.');
+        throw new Error('APPDATA yolu alınamadı.');
       }
       targetDir = path.join(appData, 'Microsoft', 'Signatures');
     } else {
@@ -184,9 +228,49 @@ ipcMain.handle('get-version', async () => {
   }
 });
 
+// IPC handler: Save As (choose path manually)
+ipcMain.handle('save-as', async (event, { fileName, htmlContent }) => {
+  try {
+    const safeName = String(fileName || 'Email Imzasi')
+      .replace(/[\/:*?"<>|]/g, '')
+      .trim() || 'Email Imzasi';
+
+    const { canceled, filePath } = await dialog.showSaveDialog({
+      title: 'İmza dosyasını kaydet',
+      defaultPath: `${safeName}.htm`,
+      filters: [
+        { name: 'HTML', extensions: ['htm', 'html'] },
+        { name: 'Tüm Dosyalar', extensions: ['*'] }
+      ]
+    });
+    if (canceled || !filePath) return { ok: false, error: 'Kaydetme iptal edildi.' };
+
+    let inlined = htmlContent;
+    try {
+      const juice = require('juice');
+      inlined = juice(inlined);
+    } catch (_) {}
+
+    const contentWithBom = (process.platform === 'win32') ? ('\uFEFF' + inlined) : inlined;
+    fs.writeFileSync(filePath, contentWithBom, { encoding: 'utf8' });
+    return { ok: true, path: filePath };
+  } catch (err) {
+    return { ok: false, error: err?.message || String(err) };
+  }
+});
+
 app.whenReady().then(() => {
   createWindow();
   setupAutoUpdate();
+  // Global shortcut to toggle DevTools with F12 only
+  try {
+    globalShortcut.register('F12', () => {
+      const win = BrowserWindow.getAllWindows()[0];
+      if (win) {
+        try { win.webContents.toggleDevTools(); } catch (_) {}
+      }
+    });
+  } catch (_) {}
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
@@ -195,4 +279,46 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
+});
+
+app.on('will-quit', () => {
+  try { globalShortcut.unregisterAll(); } catch (_) {}
+});
+
+// IPC: toggle DevTools from renderer
+ipcMain.handle('toggle-devtools', async () => {
+  try {
+    const win = BrowserWindow.getAllWindows()[0];
+    if (win) {
+      try { win.webContents.toggleDevTools(); } catch (_) {}
+      return { ok: true };
+    }
+    return { ok: false, error: 'No active window' };
+  } catch (e) {
+    return { ok: false, error: e?.message || String(e) };
+  }
+});
+
+// Open signatures folder (Windows default path)
+ipcMain.handle('open-signatures', async () => {
+  try {
+    let dir = null;
+    if (process.platform === 'win32') {
+      // Use Electron's app.getPath for consistent APPDATA
+      const appData = app.getPath('appData');
+      if (!appData) throw new Error('APPDATA yolu alınamadı.');
+      dir = path.join(appData, 'Microsoft', 'Signatures');
+    } else {
+      // For non-Windows, ask user to choose a folder (fallback)
+      const res = await dialog.showOpenDialog({ properties: ['openDirectory', 'createDirectory'] });
+      if (res.canceled || !res.filePaths[0]) throw new Error('Klasör seçilmedi.');
+      dir = res.filePaths[0];
+    }
+    fs.mkdirSync(dir, { recursive: true });
+    const err = await shell.openPath(dir);
+    if (err) throw new Error(err);
+    return { ok: true, path: dir };
+  } catch (e) {
+    return { ok: false, error: e?.message || String(e) };
+  }
 });

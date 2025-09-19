@@ -9,10 +9,11 @@
     :root { --bg:#f7f7f9; --card:#fff; --text:#222; --muted:#666; --primary:#0d6efd; --border:#e6e6e6; }
     * { box-sizing: border-box; }
     body { margin:0; font-family: Arial, Helvetica, sans-serif; background: var(--bg); color: var(--text); }
-    header { padding:12px 24px; border-bottom:1px solid var(--border); background:#fff; position:sticky; top:0; }
-    .brand { display:flex; align-items:center; gap:12px; }
-    .brand img { height:32px; width:auto; display:block; }
-    h1 { font-size:18px; margin:0; }
+    header { padding:12px 24px; border-bottom:1px solid var(--border); background:#fff; }
+    .brand { display:flex; flex-direction:row; align-items:center; justify-content:center; gap:10px; padding:6px 0; }
+    .brand img { height:25px; width:auto; display:block; }
+    .brand h1{ padding-top: 5px;}
+    h1 { font-size:16px; margin:0; text-align:left; display:flex; align-items:center; }
     main { max-width: 1200px; margin: 24px auto; padding: 0 16px; display:grid; grid-template-columns: 1.1fr 1.2fr; gap: 20px; }
     .card { background: var(--card); border:1px solid var(--border); border-radius:10px; padding:16px; }
     .field { margin-bottom:12px; }
@@ -21,9 +22,22 @@
     .row { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
     button { background: var(--primary); color:#fff; border:0; border-radius:8px; padding:10px 14px; font-size:14px; cursor:pointer; }
     button:disabled { opacity:0.6; cursor:not-allowed; }
-    .actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
-    .status { margin-top:8px; font-size:12px; color:var(--muted); }
-    iframe { width:100%; height:500px; border:1px solid var(--border); border-radius:10px; background:#fff; }
+    .actions { display:grid; grid-template-columns: 1fr 1fr; gap:10px; justify-content:stretch; align-items:start; margin-top:12px; }
+    .action-block { display:flex; flex-direction:column; gap:4px; }
+    /* Hide legacy inline status under buttons; we now use sticky footer */
+    .status { display:none !important; }
+    /* Global alert banner */
+    .alert { display:none; border-radius:10px; padding:10px 12px; font-size:14px; margin-bottom:12px; border:1px solid transparent; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+    /* Force-hide banner in favor of sticky footer status */
+    #globalStatus { display:none !important; }
+    .alert.show { display:block; animation:fadeSlide .25s ease; }
+    .alert-success { background:#e8f6ef; border-color:#c5ecd9; color:#116b45; }
+    .alert-error { background:#fdeeee; border-color:#f6cccc; color:#8b1a1a; }
+    .alert-info { background:#eef5ff; border-color:#d4e5ff; color:#0b4da2; }
+    @keyframes fadeSlide { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+    .actions .hint { font-size:12px; color:var(--muted); line-height:1.35; }
+    .actions .sep { grid-column: 1 / -1; border:0; border-top:1px dashed var(--border); margin:2px 0 6px; }
+    iframe { padding-top:50px; width:100%; height:500px; border:1px solid var(--border); border-radius:10px; background:#fff; }
     
     /* Wider screens: expand further */
     @media (min-width: 1400px) {
@@ -35,8 +49,8 @@
       iframe { height:620px; }
     }
 
-    footer { max-width:1200px; margin: 0 auto 16px auto; padding: 0 16px; color: var(--muted); font-size:12px; }
-    .footer-inner { display:flex; justify-content:space-between; align-items:center; padding:8px 0; }
+    footer { width:100%; margin: 0; padding: 8px 16px; color: var(--muted); font-size:12px; position: sticky; bottom: 0; left:0; right:0; background:#fff; border-top:1px solid var(--border); z-index: 100; backdrop-filter:saturate(1.2) blur(2px); }
+    .footer-inner { width:100%; margin:0; display:flex; justify-content:space-between; align-items:center; }
     .footer-links { display:flex; gap:12px; align-items:center; }
     .footer-links a { color: var(--muted); text-decoration: none; }
 
@@ -48,9 +62,17 @@
       border-radius:6px;
       color:#333;
       background:#fff;
-      text-decoration:none;
       font-size:12px;
+      line-height:1.1;
     }
+
+    /* Footer status dot */
+    .status-dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:8px; vertical-align:middle; }
+    .status-idle { background:#c9ced6; }
+    .status-pending { background:#f0ad2c; }
+    .status-success { background:#2fa36b; }
+    .status-error { background:#cc3d3d; }
+
     .btn:hover { background:#f5f5f5; }
 
     /* Internet connectivity banner */
@@ -73,6 +95,13 @@
     .btn-secondary { background:#f3f3f3; border:1px solid var(--border); color:#333; }
     /* Make developer link look like normal text */
     .modal-actions a { color: inherit; text-decoration: none; }
+
+    /* Toast notification */
+    .toast { position: fixed; right: 16px; bottom: 16px; background: #333; color: #fff; padding: 10px 14px; border-radius: 8px; box-shadow: 0 6px 20px rgba(0,0,0,0.25); opacity: 0; transform: translateY(10px); transition: all .25s ease; z-index: 2000; font-size: 13px; }
+    .toast.show { opacity: 0.98; transform: translateY(0); }
+    /* Header status pill */
+    .header-status { margin-top:6px; font-size:13px; padding:6px 10px; border-radius:999px; border:1px solid var(--border); color:#0b4da2; background:#eef5ff; text-align:center; display:none; }
+    .header-status.show { display:block; }
   </style>
 </head>
 <body>
@@ -81,12 +110,14 @@
       <a href="https://www.matrikstr.com" target="_blank" rel="noreferrer noopener">
         <img id="headerLogo" src="" alt="Matriks Logo" />
       </a>
-      <h1>Matriks Outlook Email İmzası Oluşturucu</h1>
+      <h1>Outlook Email İmzası Oluşturucu</h1>
     </div>
+    <div id="headerStatus" class="header-status" role="status" aria-live="polite"></div>
   </header>
   <div id="netBanner" class="net-banner">İnternet bağlantısı yok. Lütfen internet bağlantınızı kontrol edin.</div>
   <main>
     <section class="card">
+      <div id="globalStatus" class="alert alert-info" role="status" aria-live="polite" style="display:none;"></div>
       <div class="field">
         <label for="signatureName">Email İmza Adı (dosya adı)</label>
         <input id="signatureName" placeholder="Örn: Kurumsal İmza" />
@@ -109,9 +140,44 @@
           <input id="email" placeholder="Örn: ad.soyad@firma.com" />
         </div>
       </div>
+      <div class="field">
+        <label for="imageMode">Görseller nasıl eklensin?</label>
+        <select id="imageMode" style="width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:8px; font-size:14px;">
+          <option value="inline" selected>Mail gövdesine dahil (önerilen)</option>
+          <option value="external">Harici bağlantı olarak</option>
+        </select>
+      </div>
       <div class="actions">
-        <button id="previewBtn" type="button">Önizle</button>
-        <button id="saveBtn" type="button">Email İmzası Oluştur</button>
+        <div class="action-block">
+          <button id="previewBtn" type="button">Önizle</button>
+          <div class="hint">Önizlemeyi sağ tarafta günceller.</div>
+        </div>
+        <div class="action-block">
+          <button id="saveAsBtn" type="button">Dosyaya Kaydet</button>
+          <div class="hint">İmzayı .htm olarak istediğiniz klasöre kaydeder.</div>
+        </div>
+
+        <hr class="sep" />
+
+        <div class="action-block">
+          <button id="openSignaturesBtn" type="button">İmza Klasörü</button>
+          <div class="hint">Outlook’un imza klasörünü (Signatures) Explorer’da açar.</div>
+        </div>
+        <div class="action-block">
+          <button id="saveBtn" type="button">Outlook'a Kaydet</button>
+          <div class="hint">Windows’ta Outlook’un imza klasörüne doğrudan kaydeder.</div>
+        </div>
+
+        <hr class="sep" />
+
+        <div class="action-block">
+          <button id="copyGmailBtn" type="button">Gmail için Kopyala</button>
+          <div class="hint">Gmail için optimize kopya: micro‑splitting kapalı, görseller harici. Gmail’de yeni e‑posta gövdesine yapıştırın.</div>
+        </div>
+        <div class="action-block">
+          <button id="copyCleanBtn" type="button">Temiz Kopya</button>
+          <div class="hint">Seçtiğiniz moda göre (inline/harici) sadeleştirilmiş HTML kopyalar. Çoğu webmail/istemcide sorunsuz yapıştırma.</div>
+        </div>
       </div>
       <div id="status" class="status"></div>
     </section>
@@ -123,10 +189,10 @@
 
   <footer>
     <div class="footer-inner">
-      <div class="footer-links">Matriks Bina Kontrol Sistemleri</div>
+      <div id="footerStatus" class="footer-links"></div>
       <div class="footer-links">
-        <a id="aboutBtn" class="btn" href="#">Program hakkında</a>
-        <a class="btn" href="mailto:yazilim@matrikstr.com">Hata bildir</a>
+        <a id="aboutBtn" class="btn" href="#">Program Hakkında</a>
+        <a class="btn" href="mailto:yazilim@matrikstr.com">Hata Bildir</a>
         <button id="checkUpdateBtn" class="btn" type="button">Güncellemeleri Kontrol Et</button>
         <span id="version">Versiyon: 1.1.0</span>
       </div>
@@ -151,6 +217,7 @@
   </div>
 
   <script src="renderer.js"></script>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script>
     (function () {
       function setHeaderLogo() {

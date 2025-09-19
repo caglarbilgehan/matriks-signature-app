@@ -28,8 +28,14 @@ function resolveLogoUrl() {
 
 contextBridge.exposeInMainWorld('api', {
   saveSignature: (payload) => ipcRenderer.invoke('save-signature', payload),
+  saveAsSignature: (payload) => ipcRenderer.invoke('save-as', payload),
+  openSignatures: () => ipcRenderer.invoke('open-signatures'),
   getVersion: () => ipcRenderer.invoke('get-version'),
-  checkForUpdates: () => ipcRenderer.invoke('check-for-updates')
+  checkForUpdates: () => ipcRenderer.invoke('check-for-updates'),
+  toggleDevTools: () => ipcRenderer.invoke('toggle-devtools'),
+  onUpdateProgress: (cb) => ipcRenderer.on('update-progress', (_e, data) => cb?.(data)),
+  onUpdateStatus: (cb) => ipcRenderer.on('update-status', (_e, data) => cb?.(data)),
+  writeClipboardHtml: (html) => ipcRenderer.invoke('write-clipboard-html', { html })
 });
 
 // Expose assets helper
