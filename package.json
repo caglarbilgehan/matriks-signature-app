@@ -51,7 +51,7 @@
     ],
     "directories": {
       "buildResources": "build",
-      "output": "dist"
+      "output": "out"
     },
     "publish": [
       {
