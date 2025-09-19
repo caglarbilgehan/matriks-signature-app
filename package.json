@@ -1,6 +1,6 @@
 {
   "name": "signature-app",
-  "version": "1.0.1-beta.7",
+  "version": "1.0.1-beta.8",
   "description": "Cross-platform desktop app to generate Outlook email signature HTML from user inputs.",
   "main": "main.js",
   "scripts": {
