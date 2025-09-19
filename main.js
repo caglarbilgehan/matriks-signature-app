@@ -71,20 +71,6 @@ function setupAutoUpdate() {
     // Track manual update checks to handle errors differently
     let manualCheckInProgress = false;
 
-    // Expose manual update check to renderer
-    ipcMain.handle('check-for-updates', async () => {
-      try {
-        manualCheckInProgress = true;
-        const result = await autoUpdater.checkForUpdates();
-        manualCheckInProgress = false;
-        return { ok: true, version: result?.updateInfo.version };
-      } catch (err) {
-        manualCheckInProgress = false;
-        console.error('Manual update check failed:', err);
-        throw err; // Will be caught by the renderer
-      }
-    });
-
     // Check for updates on startup (after 1.5s delay to let app load)
     setTimeout(() => {
       if (!mainWindow.isMinimized()) {
@@ -95,6 +81,30 @@ function setupAutoUpdate() {
     console.error('Failed to initialize auto-updater:', err);
   }
 }
+
+// Always register manual update IPC handler so dev mode doesn't crash
+ipcMain.handle('check-for-updates', async () => {
+  try {
+    if (!app.isPackaged) {
+      // In dev, just inform user that updates require packaged app
+      dialog.showMessageBox({
+        type: 'info',
+        title: 'Güncelleme (Geliştirme Modu)',
+        message: 'Güncelleme kontrolü yalnızca kurulu (packaged) sürümde çalışır.',
+        buttons: ['Tamam']
+      });
+      return { ok: false, dev: true };
+    }
+
+    // Packaged: require updater locally and check
+    const { autoUpdater } = require('electron-updater');
+    const result = await autoUpdater.checkForUpdates();
+    return { ok: true, version: result?.updateInfo?.version };
+  } catch (err) {
+    console.error('Manual update check failed:', err);
+    return { ok: false, error: err?.message || String(err) };
+  }
+});
 
 // IPC handler to save signature
 ipcMain.handle('save-signature', async (event, { fileName, htmlContent }) => {
