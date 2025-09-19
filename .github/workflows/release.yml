@@ -9,6 +9,9 @@ jobs:
   build-release-windows:
     name: Build Windows and create GitHub Release
     runs-on: windows-latest
+    env:
+      WINDOWS_CERT_B64: ${{ secrets.WINDOWS_CERT_B64 }}
+      WINDOWS_CERT_PASSWORD: ${{ secrets.WINDOWS_CERT_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -21,6 +24,18 @@ jobs:
       - name: Install dependencies (CI)
         run: npm ci
         working-directory: .
+
+      # Optional: prepare Windows code signing certificate from GitHub Secrets
+      # Add these secrets in repo Settings > Secrets and variables > Actions
+      # - WINDOWS_CERT_B64: base64-encoded PFX contents
+      # - WINDOWS_CERT_PASSWORD: PFX password
+      - name: Prepare code signing cert (optional)
+        if: ${{ env.WINDOWS_CERT_B64 != '' && env.WINDOWS_CERT_PASSWORD != '' }}
+        shell: bash
+        run: |
+          echo "$WINDOWS_CERT_B64" | base64 -d > wincert.pfx
+          echo "CSC_LINK=file://$GITHUB_WORKSPACE/wincert.pfx" >> $GITHUB_ENV
+          echo "CSC_KEY_PASSWORD=$WINDOWS_CERT_PASSWORD" >> $GITHUB_ENV
 
       - name: Prebuild assets (copy branding to build/)
         run: npm run prebuild:assets

@@ -6,6 +6,7 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 900,
     height: 700,
+    show: false,
     icon: path.join(__dirname, 'build', 'app-icon.ico'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -16,6 +17,12 @@ function createWindow() {
   });
 
   win.loadFile(path.join(__dirname, 'index.html'));
+
+  // Maximize when ready and then show the window
+  win.once('ready-to-show', () => {
+    try { win.maximize(); } catch (_) {}
+    win.show();
+  });
 }
 
 // IPC handler to save signature

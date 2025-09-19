@@ -11,6 +11,9 @@
     "dist:win": "npm run prebuild:assets && electron-builder --win --x64",
     "dist:mac": "electron-builder --mac --x64",
     "dist:linux": "electron-builder --linux --x64",
+    "prepare": "husky install",
+    "release": "standard-version && git push --follow-tags",
+    "release:first": "standard-version --first-release",
     "version:patch": "npm version patch -m \"chore: bump version to %s\"",
     "version:minor": "npm version minor -m \"chore: bump version to %s\"",
     "version:major": "npm version major -m \"chore: bump version to %s\"",
@@ -26,7 +29,11 @@
   "devDependencies": {
     "electron": "28.2.0",
     "electron-packager": "17.1.1",
-    "electron-builder": "24.6.4"
+    "electron-builder": "24.6.4",
+    "@commitlint/cli": "18.6.1",
+    "@commitlint/config-conventional": "18.6.3",
+    "husky": "9.1.6",
+    "standard-version": "9.5.0"
   },
   "dependencies": {
     "juice": "10.0.0"
@@ -54,6 +61,10 @@
     ],
     "win": {
       "icon": "build/app-icon.ico",
+      "rfc3161TimeStampServer": "http://timestamp.digicert.com",
+      "publisherName": ["Matriks Bina Kontrol Sistemleri"],
+      "certificateSubjectName": "Matriks Bina Kontrol Sistemleri",
+      "certificateSha1": "",
       "target": [
         {
           "target": "nsis",

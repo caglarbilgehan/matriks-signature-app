@@ -43,7 +43,7 @@
                   <a href="tel:{{PHONE_TEL}}" style="color:#333!important; text-decoration:none!important; text-underline:none!important; border:0!important; border-bottom:0!important;">{{PHONE_DISPLAY_SAFE}}</a>
                 </td>
                 <td width="50%" align="right" style="padding:0; color:#333; white-space:nowrap; text-align:right; text-decoration:none!important; mso-table-lspace:0pt; mso-table-rspace:0pt;">
-                  <strong style="color:#333;">Website: </strong>
+                  <strong style="color:#333;">Web sitesi: </strong>
                   <a href="https://www.matrikstr.com" target="_blank" style="color:#333!important; text-decoration:none!important; text-underline:none!important; border:0!important; border-bottom:0!important;">{{WEBSITE_SAFE}}</a>
                 </td>
               </tr>
@@ -55,17 +55,17 @@
             <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%; table-layout:fixed;">
               <tr>
                 <td style="padding:0; color:#333; white-space:nowrap; text-decoration:none!important;" valign="middle">
-                  <strong style="color:#333;">Email: </strong>
+                  <strong style="color:#333;">E-posta: </strong>
                   <a href="mailto:{{EMAIL}}" style="color:#333!important; text-decoration:none!important; text-underline:none!important; border:0!important; border-bottom:0!important;">{{EMAIL_SAFE}}</a>
                 </td>
                 <td style="padding:0; width:100%;"></td>
                 <td align="right" style="padding:0; white-space:nowrap; text-align:right; width:1%;" valign="middle">
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="right" style="margin-left:auto; margin-right:0; mso-table-lspace:0pt; mso-table-rspace:0pt; table-layout:fixed;">
                     <tr>
-                      <!-- Website -->
+                      <!-- Web sitesi -->
                       <td style="padding-right:10px; white-space:nowrap;" valign="middle">
                         <a href="https://www.google.com/maps?ll=40.984782,29.134192&z=10&t=m&hl=tr-TR&gl=US&mapclient=embed&cid=18104416979114888248" target="_blank" style="color:#333!important; text-decoration:none!important; border:0!important; border-bottom:0!important;">
-                          <img src="https://matrikstr.com/email-signature/icons/website.png" alt="Website" width="24"  style="display:block; border:0;">
+                          <img src="https://matrikstr.com/email-signature/icons/website.png" alt="Web sitesi" width="24"  style="display:block; border:0;">
                         </a>
                       </td>
                       <!-- Location -->
@@ -83,31 +83,31 @@
                       <!-- LinkedIn -->
                       <td style="padding-right:10px; white-space:nowrap;" valign="middle">
                         <a href="https://www.linkedin.com/company/matriks-building-control-systems/" target="_blank" style="color:#333!important; text-decoration:none!important; border:0!important; border-bottom:0!important;">
-                          <img src="https://matrikstr.com/email-signature/icons/linkedin.png" alt="LinkedIn" width="24"  style="display:block; border:0;">
+                          <img src="https://matrikstr.com/email-signature/icons/linkedin.png" alt="LinkedIn hesabı" width="24"  style="display:block; border:0;">
                         </a>
                       </td>
                       <!-- Facebook -->
                       <td style="padding-right:10px; white-space:nowrap;" valign="middle">
                         <a href="https://www.facebook.com/MatriksBinaKontrol/" target="_blank" style="color:#333!important; text-decoration:none!important; border:0!important; border-bottom:0!important;">
-                          <img src="https://matrikstr.com/email-signature/icons/facebook.png" alt="Facebook" width="24"  style="display:block; border:0;">
+                          <img src="https://matrikstr.com/email-signature/icons/facebook.png" alt="Facebook sayfası" width="24"  style="display:block; border:0;">
                         </a>
                       </td>
                       <!-- Twitter / X -->
                       <td style="padding-right:10px; white-space:nowrap;" valign="middle">
                         <a href="https://x.com/matriksbks" target="_blank" style="color:#333!important; text-decoration:none!important; border:0!important; border-bottom:0!important;">
-                          <img src="https://matrikstr.com/email-signature/icons/twitter-x.png" alt="X (Twitter)" width="24"  style="display:block; border:0;">
+                          <img src="https://matrikstr.com/email-signature/icons/twitter-x.png" alt="X (Twitter) hesabı" width="24"  style="display:block; border:0;">
                         </a>
                       </td>
                       <!-- Instagram -->
                       <td style="padding-right:10px; white-space:nowrap;" valign="middle">
                         <a href="https://www.instagram.com/matriks.bina.kontrol.sistemler/" target="_blank" style="color:#333!important; text-decoration:none!important; border:0!important; border-bottom:0!important;">
-                          <img src="https://matrikstr.com/email-signature/icons/instagram.png" alt="Instagram" width="24"  style="display:block; border:0;">
+                          <img src="https://matrikstr.com/email-signature/icons/instagram.png" alt="Instagram hesabı" width="24"  style="display:block; border:0;">
                         </a>
                       </td>
                       <!-- YouTube -->
                       <td style="padding-right:0; white-space:nowrap;" valign="middle">
                         <a href="https://www.youtube.com/channel/UC1cwUfML-nEudxS1O6HX_Vg" target="_blank" style="color:#333!important; text-decoration:none!important; border:0!important; border-bottom:0!important;">
-                          <img src="https://matrikstr.com/email-signature/icons/youtube.png" alt="YouTube" width="24"  style="display:block; border:0;">
+                          <img src="https://matrikstr.com/email-signature/icons/youtube.png" alt="YouTube kanalı" width="24"  style="display:block; border:0;">
                         </a>
                       </td>
                     </tr>
