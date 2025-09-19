@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="https://matrikstr.com/email-signature/matriks-logo.png" alt="Matriks Logo" height="56" />
-</p>
-
-# Matriks Outlook Email İmzası Oluşturucu (Electron)
+# Matriks Outlook Email İmzası Oluşturucu 
 
 Kullanıcıdan ad-soyad, ünvan, telefon, email ve "Email İmza Adı" (dosya adı) bilgilerini alır; Outlook uyumlu HTML imzası üretir.
 
