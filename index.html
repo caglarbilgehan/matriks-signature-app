@@ -79,7 +79,7 @@
   <header>
     <div class="brand">
       <a href="https://www.matrikstr.com" target="_blank" rel="noreferrer noopener">
-        <img src="build/matriks-logo.png" alt="Matriks Logo" />
+        <img id="headerLogo" src="" alt="Matriks Logo" />
       </a>
       <h1>Matriks Outlook Email İmzası Oluşturucu</h1>
     </div>
@@ -150,5 +150,51 @@
   </div>
 
   <script src="renderer.js"></script>
+  <script>
+    (function () {
+      function setHeaderLogo() {
+        var el = document.getElementById('headerLogo');
+        if (!el) return;
+        if (window.assets) {
+          if (typeof window.assets.logo === 'function') {
+            el.src = window.assets.logo();
+            return;
+          }
+          if (typeof window.assets.url === 'function') {
+            el.src = window.assets.url('build/matriks-logo.png');
+            return;
+          }
+        }
+        // Last fallback in dev
+        el.src = 'build/matriks-logo.png';
+      }
+
+      function fixAboutImages() {
+        var about = document.getElementById('aboutContent');
+        if (!about || !window.assets || typeof window.assets.url !== 'function') return;
+        // Replace any relative build path with absolute file URL
+        var imgs = about.querySelectorAll('img[src="build/matriks-logo.png"], img[src^="build/"]');
+        imgs.forEach(function (img) {
+          var src = img.getAttribute('src');
+          if (src && src.indexOf('build/') === 0) {
+            img.src = window.assets.url(src);
+          }
+        });
+      }
+
+      // Observe changes to aboutContent to fix images when HTML is injected
+      function observeAbout() {
+        var about = document.getElementById('aboutContent');
+        if (!about || typeof MutationObserver === 'undefined') return;
+        var obs = new MutationObserver(function () { fixAboutImages(); });
+        obs.observe(about, { childList: true, subtree: true });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        setHeaderLogo();
+        observeAbout();
+      });
+    })();
+  </script>
 </body>
 </html>

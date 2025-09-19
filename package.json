@@ -63,8 +63,6 @@
       "icon": "build/app-icon.ico",
       "rfc3161TimeStampServer": "http://timestamp.digicert.com",
       "publisherName": ["Matriks Bina Kontrol Sistemleri"],
-      "certificateSubjectName": "Matriks Bina Kontrol Sistemleri",
-      "certificateSha1": "",
       "target": [
         {
           "target": "nsis",

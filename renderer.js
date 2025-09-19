@@ -64,7 +64,7 @@
                     <tr>
                       <!-- Web sitesi -->
                       <td style="padding-right:10px; white-space:nowrap;" valign="middle">
-                        <a href="https://www.google.com/maps?ll=40.984782,29.134192&z=10&t=m&hl=tr-TR&gl=US&mapclient=embed&cid=18104416979114888248" target="_blank" style="color:#333!important; text-decoration:none!important; border:0!important; border-bottom:0!important;">
+                        <a href="https://matrikstr.com/" target="_blank" style="color:#333!important; text-decoration:none!important; border:0!important; border-bottom:0!important;">
                           <img src="https://matrikstr.com/email-signature/icons/website.png" alt="Web sitesi" width="24"  style="display:block; border:0;">
                         </a>
                       </td>
@@ -260,9 +260,24 @@
       aboutContent.textContent = 'Yükleniyor...';
       fetch('docs/index.html')
         .then(r => r.ok ? r.text() : Promise.reject(new Error('İçerik yüklenemedi')))
-        .then(html => { aboutContent.innerHTML = html; })
+        .then(html => {
+          try {
+            var logoUrl = (window.assets && typeof window.assets.logo === 'function')
+              ? window.assets.logo()
+              : 'build/matriks-logo.png';
+            // Fix specific logo path
+            html = html.replace(/src=(['"])build\/matriks-logo\.png\1/g, 'src="' + logoUrl + '"');
+            // Fix any other build/* images to absolute file URLs if helper available
+            if (window.assets && typeof window.assets.url === 'function') {
+              html = html.replace(/src=(['"])build\/(.+?)\1/g, function(_, q, p) {
+                return 'src="' + window.assets.url('build/' + p) + '"';
+              });
+            }
+          } catch (_) { /* ignore */ }
+          aboutContent.innerHTML = html;
+        })
         .catch(() => {
-          aboutContent.textContent = 'İçerik yüklenemedi. Lütfen daha sonra tekrar deneyin.';
+          aboutContent.textContent = 'İçerik yüklenemedi.';
         });
     }
   }
