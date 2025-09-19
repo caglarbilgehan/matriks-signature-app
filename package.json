@@ -1,6 +1,6 @@
 {
   "name": "signature-app",
-  "version": "1.1.0",
+  "version": "1.1.1-beta.0",
   "description": "Cross-platform desktop app to generate Outlook email signature HTML from user inputs.",
   "main": "main.js",
   "scripts": {
@@ -57,7 +57,9 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
@@ -70,11 +72,15 @@
       "shortcutName": "Matriks Outlook Email İmzası Oluşturucu"
     },
     "mac": {
-      "target": ["dmg"],
+      "target": [
+        "dmg"
+      ],
       "category": "public.app-category.productivity"
     },
     "linux": {
-      "target": ["AppImage"],
+      "target": [
+        "AppImage"
+      ],
       "category": "Utility"
     }
   }
