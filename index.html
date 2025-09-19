@@ -56,6 +56,23 @@
     /* Internet connectivity banner */
     .net-banner { display:none; background:#ffe5e5; color:#a30000; border-bottom:1px solid #f2bcbc; padding:8px 24px; }
     .net-banner.show { display:block; }
+
+    /* Modal */
+    .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:1000; }
+    .modal.show { display:flex; align-items:center; justify-content:center; }
+    .modal-card { width:min(820px, 92vw); max-height:80vh; background:#fff; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.25); display:flex; flex-direction:column; }
+    .modal-header { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border); }
+    .modal-header h2 { font-size:16px; margin:0; }
+    .modal-body { padding:12px 16px; overflow:auto; white-space:normal; font-size:13px; color:#333; line-height:1.35; }
+    .modal-body h1, .modal-body h2, .modal-body h3 { margin:8px 0 6px; }
+    .modal-body p { margin:4px 0; }
+    .modal-body ul, .modal-body ol { margin:4px 0 6px 16px; padding-left:16px; }
+    .modal-body li { margin:2px 0; }
+    .modal-body img { display:block; margin:4px 0; }
+    .modal-actions { padding:12px 16px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; }
+    .btn-secondary { background:#f3f3f3; border:1px solid var(--border); color:#333; }
+    /* Make developer link look like normal text */
+    .modal-actions a { color: inherit; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -108,12 +125,29 @@
     <div class="footer-inner">
       <div class="footer-links">Matriks Bina Kontrol Sistemleri</div>
       <div class="footer-links">
-        <span id="devLabel">Geliştirici: <a href="mailto:bilgiislem@matrikstr.com">Çağlar Bilgehan</a></span>
-        <a class="btn" href="https://github.com/caglarbilgehan/matriks-signature-app" target="_blank" rel="noreferrer noopener">GitHub Repository</a>
+        <a id="aboutBtn" class="btn" href="#">Program hakkında</a>
+        <a class="btn" href="mailto:yazilim@matrikstr.com">Hata bildir</a>
         <span id="version">Versiyon: 1.1.0</span>
       </div>
     </div>
   </footer>
+
+  <!-- About Modal -->
+  <div id="aboutModal" class="modal" aria-hidden="true" role="dialog" aria-label="Program hakkında">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Program hakkında</h2>
+        <button id="aboutClose" class="btn btn-secondary" type="button">Kapat</button>
+      </div>
+      <div id="aboutContent" class="modal-body">Yükleniyor...</div>
+      <div class="modal-actions">
+        <div style="margin-right:auto; font-size:12px; color:#666;">
+          Geliştirici: <a href="https://github.com/caglarbilgehan/" target="_blank" rel="noreferrer noopener">Çağlar Bilgehan</a> — <a href="mailto:yazilim@matrikstr.com">yazilim@matrikstr.com</a>
+        </div>
+        <button id="aboutClose2" class="btn btn-secondary" type="button">Kapat</button>
+      </div>
+    </div>
+  </div>
 
   <script src="renderer.js"></script>
 </body>

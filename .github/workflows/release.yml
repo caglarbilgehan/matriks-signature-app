@@ -1,0 +1,37 @@
+name: Build and Release on Tag
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-release-windows:
+    name: Build Windows and create GitHub Release
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies (CI)
+        run: npm ci
+        working-directory: .
+
+      - name: Prebuild assets (copy branding to build/)
+        run: npm run prebuild:assets
+
+      - name: Build Windows installer and publish to GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --win --x64 --publish always
+
+      - name: Upload dist as artifact (optional)
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-windows
+          path: dist/**

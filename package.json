@@ -7,9 +7,19 @@
     "start": "electron .",
     "pack": "electron-packager . SignatureApp --platform=win32,darwin,linux --arch=x64 --overwrite",
     "dist": "electron-builder",
-    "dist:win": "electron-builder --win --x64",
+    "prebuild:assets": "node scripts/prebuild.js",
+    "dist:win": "npm run prebuild:assets && electron-builder --win --x64",
     "dist:mac": "electron-builder --mac --x64",
-    "dist:linux": "electron-builder --linux --x64"
+    "dist:linux": "electron-builder --linux --x64",
+    "version:patch": "npm version patch -m \"chore: bump version to %s\"",
+    "version:minor": "npm version minor -m \"chore: bump version to %s\"",
+    "version:major": "npm version major -m \"chore: bump version to %s\"",
+    "version:prebeta": "npm version prerelease --preid=beta -m \"chore: prerelease (beta) %s\"",
+    "version:prealpha": "npm version prerelease --preid=alpha -m \"chore: prerelease (alpha) %s\"",
+    "postversion": "git push && git push --tags",
+    "release:win": "npm run dist:win",
+    "release:mac": "npm run dist:mac",
+    "release:linux": "npm run dist:linux"
   },
   "author": "",
   "license": "MIT",
@@ -34,6 +44,14 @@
       "buildResources": "build",
       "output": "dist"
     },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "caglarbilgehan",
+        "repo": "matriks-signature-app",
+        "releaseType": "prerelease"
+      }
+    ],
     "win": {
       "icon": "build/app-icon.ico",
       "target": [

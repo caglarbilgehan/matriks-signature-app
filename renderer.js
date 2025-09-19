@@ -244,4 +244,41 @@
   window.addEventListener('offline', updateNetBanner);
   // Initial check
   updateNetBanner();
+
+  // About modal handlers
+  const aboutBtn = document.getElementById('aboutBtn');
+  const aboutModal = document.getElementById('aboutModal');
+  const aboutClose = document.getElementById('aboutClose');
+  const aboutClose2 = document.getElementById('aboutClose2');
+  const aboutContent = document.getElementById('aboutContent');
+
+  function openAbout() {
+    if (!aboutModal) return;
+    aboutModal.classList.add('show');
+    // Load docs/index.html content
+    if (aboutContent) {
+      aboutContent.textContent = 'Yükleniyor...';
+      fetch('docs/index.html')
+        .then(r => r.ok ? r.text() : Promise.reject(new Error('İçerik yüklenemedi')))
+        .then(html => { aboutContent.innerHTML = html; })
+        .catch(() => {
+          aboutContent.textContent = 'İçerik yüklenemedi. Lütfen daha sonra tekrar deneyin.';
+        });
+    }
+  }
+
+  function closeAbout() {
+    if (!aboutModal) return;
+    aboutModal.classList.remove('show');
+  }
+
+  if (aboutBtn) aboutBtn.addEventListener('click', (e) => { e.preventDefault(); openAbout(); });
+  if (aboutClose) aboutClose.addEventListener('click', closeAbout);
+  if (aboutClose2) aboutClose2.addEventListener('click', closeAbout);
+  // Close when clicking outside the card
+  if (aboutModal) aboutModal.addEventListener('click', (e) => {
+    if (e.target === aboutModal) closeAbout();
+  });
+  // ESC closes modal
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAbout(); });
 })();
