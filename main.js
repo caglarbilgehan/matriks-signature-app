@@ -1,5 +1,4 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
 
@@ -30,6 +29,8 @@ function createWindow() {
 function setupAutoUpdate() {
   if (!app.isPackaged) return; // skip in dev
   try {
+    // Lazy-require to avoid crashing in dev if module isn't installed
+    const { autoUpdater } = require('electron-updater');
     autoUpdater.allowPrerelease = true; // we are using beta tags
     autoUpdater.autoDownload = true;
 

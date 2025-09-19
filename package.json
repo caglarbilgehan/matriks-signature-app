@@ -68,7 +68,7 @@
         "Matriks Bina Kontrol Sistemleri"
       ],
       "artifactName": "signature-app-Setup-${version}.${ext}",
-      "fileVersion": "1.0.1.3",
+      "executableName": "SignatureApp",
       "target": [
         {
           "target": "nsis",

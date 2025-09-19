@@ -205,7 +205,7 @@
     const fileName = $('signatureName').value || 'Email Imzasi';
     const html = updatePreview();
     $('status').textContent = 'Kaydediliyor...';
-    const res = await window.api.saveSignature(fileName, html);
+    const res = await window.api.saveSignature({ fileName, htmlContent: html });
     if(res.ok){
       $('status').textContent = `İmza kaydedildi: ${res.path}`;
     } else {
