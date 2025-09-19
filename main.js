@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
 
@@ -23,6 +24,38 @@ function createWindow() {
     try { win.maximize(); } catch (_) {}
     win.show();
   });
+}
+
+// Auto-update setup (GitHub Releases). Works only when packaged.
+function setupAutoUpdate() {
+  if (!app.isPackaged) return; // skip in dev
+  try {
+    autoUpdater.allowPrerelease = true; // we are using beta tags
+    autoUpdater.autoDownload = true;
+
+    autoUpdater.on('error', (err) => {
+      // optional: log
+    });
+
+    autoUpdater.on('update-downloaded', async () => {
+      const result = await dialog.showMessageBox({
+        type: 'question',
+        buttons: ['Şimdi Yükle', 'Daha Sonra'],
+        defaultId: 0,
+        cancelId: 1,
+        title: 'Güncelleme hazır',
+        message: 'Yeni bir sürüm indirildi. Şimdi yüklemek ister misiniz?'
+      });
+      if (result.response === 0) {
+        autoUpdater.quitAndInstall();
+      }
+    });
+
+    // Check for updates shortly after ready
+    setTimeout(() => {
+      try { autoUpdater.checkForUpdatesAndNotify(); } catch (_) {}
+    }, 1500);
+  } catch (_) { /* ignore */ }
 }
 
 // IPC handler to save signature
@@ -91,6 +124,7 @@ ipcMain.handle('get-version', async () => {
 
 app.whenReady().then(() => {
   createWindow();
+  setupAutoUpdate();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
