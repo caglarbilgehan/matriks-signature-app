@@ -73,8 +73,13 @@ function setupAutoUpdate() {
 
     // Check for updates on startup (after 1.5s delay to let app load)
     setTimeout(() => {
-      if (!mainWindow.isMinimized()) {
-        autoUpdater.checkForUpdates().catch(console.error);
+      try {
+        const win = BrowserWindow.getAllWindows()[0];
+        if (win && !win.isMinimized()) {
+          autoUpdater.checkForUpdates().catch(console.error);
+        }
+      } catch (e) {
+        console.error('Auto-update check failed on startup:', e);
       }
     }, 1500);
   } catch (err) {
