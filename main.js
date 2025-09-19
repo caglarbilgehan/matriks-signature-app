@@ -58,13 +58,22 @@ function setupAutoUpdate() {
 
     autoUpdater.on('error', (err) => {
       console.error('Update error:', err);
-      // Don't show error dialog for manual checks to avoid double dialogs
+      // Build a concise, user-friendly error
+      const raw = (err?.message || '').toString();
+      let friendly = 'Güncelleme kontrol edilirken bir sorun oluştu.';
+      if (/Cannot find latest\.yml|latest\.yml/i.test(raw)) {
+        friendly = 'Güncelleme bulunamadı veya yayın dosyaları eksik. Lütfen daha sonra tekrar deneyin.';
+      } else if (/404|releases\.atom|Not Found/i.test(raw)) {
+        friendly = 'Güncelleme kaynağına erişilemedi (404). Lütfen internet bağlantınızı ve yayın durumunu kontrol edin.';
+      }
+      // Show minimal dialog only for auto flow (not manual)
       if (!manualCheckInProgress) {
-        dialog.showErrorBox('Güncelleme Hatası', err?.message || 'Güncelleme kontrol edilirken hata oluştu.');
+        dialog.showErrorBox('Güncelleme Hatası', friendly);
       }
       if (manualCheckInProgress) {
         manualCheckInProgress = false;
-        throw err; // Will be caught by the manual check handler
+        // Re-throw a simplified error so renderer can show status text briefly
+        throw new Error(friendly);
       }
     });
 
