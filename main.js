@@ -34,29 +34,66 @@ function setupAutoUpdate() {
     autoUpdater.allowPrerelease = true; // we are using beta tags
     autoUpdater.autoDownload = true;
 
-    autoUpdater.on('error', (err) => {
-      // optional: log
+    autoUpdater.on('update-available', (info) => {
+      console.log('Update available:', info.version);
+      dialog.showMessageBox({
+        type: 'info',
+        title: 'Güncelleme Mevcut',
+        message: `Yeni sürüm mevcut: ${info.version}. İndiriliyor...`,
+        buttons: ['Tamam']
+      });
     });
 
-    autoUpdater.on('update-downloaded', async () => {
-      const result = await dialog.showMessageBox({
-        type: 'question',
-        buttons: ['Şimdi Yükle', 'Daha Sonra'],
-        defaultId: 0,
-        cancelId: 1,
-        title: 'Güncelleme hazır',
-        message: 'Yeni bir sürüm indirildi. Şimdi yüklemek ister misiniz?'
+    autoUpdater.on('update-downloaded', (info) => {
+      console.log('Update downloaded, version:', info.version);
+      dialog.showMessageBox({
+        type: 'info',
+        title: 'Güncelleme İndirildi',
+        message: `${info.version} sürümü indirildi. Uygulamayı yeniden başlatmak ister misiniz?`,
+        buttons: ['Daha Sonra', 'Yeniden Başlat']
+      }).then(({ response }) => {
+        if (response === 1) autoUpdater.quitAndInstall();
       });
-      if (result.response === 0) {
-        autoUpdater.quitAndInstall();
+    });
+
+    autoUpdater.on('error', (err) => {
+      console.error('Update error:', err);
+      // Don't show error dialog for manual checks to avoid double dialogs
+      if (!manualCheckInProgress) {
+        dialog.showErrorBox('Güncelleme Hatası', err?.message || 'Güncelleme kontrol edilirken hata oluştu.');
+      }
+      if (manualCheckInProgress) {
+        manualCheckInProgress = false;
+        throw err; // Will be caught by the manual check handler
       }
     });
 
-    // Check for updates shortly after ready
+    // Track manual update checks to handle errors differently
+    let manualCheckInProgress = false;
+
+    // Expose manual update check to renderer
+    ipcMain.handle('check-for-updates', async () => {
+      try {
+        manualCheckInProgress = true;
+        const result = await autoUpdater.checkForUpdates();
+        manualCheckInProgress = false;
+        return { ok: true, version: result?.updateInfo.version };
+      } catch (err) {
+        manualCheckInProgress = false;
+        console.error('Manual update check failed:', err);
+        throw err; // Will be caught by the renderer
+      }
+    });
+
+    // Check for updates on startup (after 1.5s delay to let app load)
     setTimeout(() => {
-      try { autoUpdater.checkForUpdatesAndNotify(); } catch (_) {}
+      if (!mainWindow.isMinimized()) {
+        autoUpdater.checkForUpdates().catch(console.error);
+      }
     }, 1500);
-  } catch (_) { /* ignore */ }
+  } catch (err) {
+    console.error('Failed to initialize auto-updater:', err);
+  }
 }
 
 // IPC handler to save signature

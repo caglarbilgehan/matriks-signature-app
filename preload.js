@@ -28,7 +28,8 @@ function resolveLogoUrl() {
 
 contextBridge.exposeInMainWorld('api', {
   saveSignature: (payload) => ipcRenderer.invoke('save-signature', payload),
-  getVersion: () => ipcRenderer.invoke('get-version')
+  getVersion: () => ipcRenderer.invoke('get-version'),
+  checkForUpdates: () => ipcRenderer.invoke('check-for-updates')
 });
 
 // Expose assets helper

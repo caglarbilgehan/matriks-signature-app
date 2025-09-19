@@ -216,6 +216,16 @@
   // Initial preview
   updatePreview();
 
+  // Check for updates button
+  $('checkUpdateBtn').addEventListener('click', async () => {
+    $('status').textContent = 'Güncellemeler kontrol ediliyor...';
+    try {
+      await window.api.checkForUpdates();
+    } catch (error) {
+      $('status').textContent = `Güncelleme kontrolü başarısız: ${error.message}`;
+    }
+  });
+
   // Populate version label in footer if available
   (async () => {
     try {
